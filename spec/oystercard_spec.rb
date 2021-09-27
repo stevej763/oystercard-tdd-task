@@ -28,18 +28,31 @@ describe Oystercard do
 
   describe '#touch-in' do
     it 'should set in_use to true' do
+      subject.top_up(10)
       subject.touch_in
       expect(subject.in_use).to eq true
+    end
+
+    it 'should throw an error when balance is below minimum' do
+      expect { subject.touch_in }.to raise_error 'Balance is too low. Minimum balance must be £1'
+    end
+  end
+
+  describe '#touch-out' do
+    it 'should set in_use to true' do
+      subject.touch_out
+      expect(subject.in_use).to eq false
     end
   end
 
   describe '#in_journey' do
     it 'should return true when in use' do
+      subject.top_up(10)
       subject.touch_in
       expect(subject.in_journey?).to eq true
     end
 
-    it 'should return true when in use' do
+    it 'should return false when not in use' do
       expect(subject.in_journey?).to eq false
     end
   end
