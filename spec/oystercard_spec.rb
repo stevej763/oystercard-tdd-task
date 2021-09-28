@@ -2,6 +2,7 @@ require 'Oystercard'
 
 describe Oystercard do
   let(:station) { double :station }
+  let(:exit_station) { double :exit_station }
 
   describe '#initialize' do
     it 'should set journeys to a empty array' do
@@ -44,17 +45,34 @@ describe Oystercard do
     it 'should set entry station to nil' do
       subject.top_up(10)
       subject.touch_in(station)
-      subject.touch_out
+      subject.touch_out(exit_station)
       expect(subject.entry_station).to eq nil
     end
 
     it 'should reduce the balance by £1' do
-      expect { subject.touch_out }.to change{ subject.balance }.by(-1)
+      expect { subject.touch_out(exit_station) }.to change{ subject.balance }.by(-1)
     end
 
-    it 'should store journey history' do
-      exit_station = double :exit_station
-      expect(subject.journeys).to include({ :entry_station => station, :exit_station => exit_station})
+    it 'should store latest journey' do
+      subject.top_up(10)
+      subject.touch_in(station)
+      subject.touch_out(exit_station)
+      expect(subject.journeys).to include({ entry_station: station, exit_station: exit_station})
+    end
+
+    it 'should store history of journeys' do
+      subject.top_up(10)
+      3.times do 
+        subject.touch_in(station)
+        subject.touch_out(exit_station)
+      end
+
+      expected = [
+        { entry_station: station, exit_station: exit_station},
+        { entry_station: station, exit_station: exit_station},
+        { entry_station: station, exit_station: exit_station}
+      ]
+      expect(subject.journeys).to eq expected
     end
   end
 

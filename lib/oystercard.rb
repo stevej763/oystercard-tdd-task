@@ -31,8 +31,9 @@ class Oystercard
     end
   end
   
-  def touch_out
-    deduct(MINIMUM_CHARGE)
+  def touch_out(exit_station)
+    deduct
+    journeys << {entry_station: entry_station, exit_station: exit_station}
     @entry_station = nil
   end
   
@@ -42,7 +43,7 @@ class Oystercard
   
   private
   
-  def deduct(amount)
+  def deduct(amount = MINIMUM_CHARGE)
     @balance -= amount
   end
 
