@@ -28,6 +28,12 @@ describe Oystercard do
     it 'should throw an error when balance is below minimum' do
       expect { subject.touch_in }.to raise_error 'Balance is too low. Minimum balance must be £1'
     end
+
+    it 'should set entry station' do
+      station = { double :station }
+      subject.touch_in(station)
+      expect(subject.entry_station).to eq station
+    end
   end
 
   describe '#touch-out' do
