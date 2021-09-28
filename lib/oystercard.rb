@@ -1,6 +1,7 @@
 class Oystercard
   MAXIMUM_BALANCE = 90
   MINIMUM_BALANCE = 1
+  MINIMUM_CHARGE = 1
 
   def initialize
     @balance = 0
@@ -18,11 +19,7 @@ class Oystercard
       @balance += amount
     end
   end
-
-  def deduct(amount)
-    @balance -=amount
-  end
-
+  
   def touch_in
     if balance_too_low?
       raise "Balance is too low. Minimum balance must be £#{@minimum_balance}" 
@@ -30,16 +27,21 @@ class Oystercard
       @in_use = true
     end
   end
-
+  
   def touch_out
+    deduct(MINIMUM_CHARGE)
     @in_use = false
   end
   
   def in_journey?
     @in_use
   end
-
+  
   private
+  
+  def deduct(amount)
+    @balance -= amount
+  end
 
   def maximum_balance_exceeded?(amount)
     @balance + amount > @maximum_balance

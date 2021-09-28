@@ -18,14 +18,6 @@ describe Oystercard do
     end
   end
 
-  describe '#decuct' do
-    it 'should deduct the balance by 10' do
-      subject.top_up(10)
-      subject.deduct(10)
-      expect(subject.balance).to eq 0
-    end
-  end
-
   describe '#touch-in' do
     it 'should set in_use to true' do
       subject.top_up(10)
@@ -42,6 +34,10 @@ describe Oystercard do
     it 'should set in_use to true' do
       subject.touch_out
       expect(subject.in_use).to eq false
+    end
+
+    it 'should reduce the balance by £1' do
+      expect { subject.touch_out }.to change{ subject.balance }.by(-1)
     end
   end
 
