@@ -1,6 +1,6 @@
 class Oystercard
 
-  attr_reader :balance, :in_use, :entry_station
+  attr_reader :balance, :in_use, :entry_station, :journeys
 
   MAXIMUM_BALANCE = 90
   MINIMUM_BALANCE = 1
@@ -11,6 +11,7 @@ class Oystercard
     @minimum_balance = MINIMUM_BALANCE
     @maximum_balance = MAXIMUM_BALANCE
     @entry_station = nil
+    @journeys = []
   end
 
 

@@ -2,6 +2,13 @@ require 'Oystercard'
 
 describe Oystercard do
   let(:station) { double :station }
+
+  describe '#initialize' do
+    it 'should set journeys to a empty array' do
+      expect(subject.journeys).to eq []  
+    end
+  end
+
   describe '#balance' do
     it 'has a balance' do
       expect(subject.balance).to eq 0
@@ -43,6 +50,11 @@ describe Oystercard do
 
     it 'should reduce the balance by £1' do
       expect { subject.touch_out }.to change{ subject.balance }.by(-1)
+    end
+
+    it 'should store journey history' do
+      exit_station = double :exit_station
+      expect(subject.journeys).to include({ :entry_station => station, :exit_station => exit_station})
     end
   end
 
