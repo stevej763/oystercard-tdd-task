@@ -4,12 +4,6 @@ describe Oystercard do
   let(:station) { double :station }
   let(:exit_station) { double :exit_station }
 
-  describe '#initialize' do
-    it 'should set journeys to a empty array' do
-      expect(subject.journeys).to eq []  
-    end
-  end
-
   describe '#balance' do
     it 'has a balance' do
       expect(subject.balance).to eq 0
@@ -73,18 +67,6 @@ describe Oystercard do
         { entry_station: station, exit_station: exit_station}
       ]
       expect(subject.journeys).to eq expected
-    end
-  end
-
-  describe '#in_journey' do
-    it 'should return true when in use' do
-      subject.top_up(10)
-      subject.touch_in(station)
-      expect(subject.in_journey?).to eq true
-    end
-
-    it 'should return false when not in use' do
-      expect(subject.in_journey?).to eq false
     end
   end
 end
