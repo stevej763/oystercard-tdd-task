@@ -1,8 +1,10 @@
 require 'Oystercard'
 
 describe Oystercard do
-  let(:station) { double :station }
+  let(:entry_station) { double :entry_station }
   let(:exit_station) { double :exit_station }
+  let(:journey) { double :journey, start_journey: entry_station, end_journey: exit_station, fare: 1 }
+  let(:subject) { described_class.new(journey) } 
 
   describe '#balance' do
     it 'has a balance' do
@@ -25,48 +27,27 @@ describe Oystercard do
 
     it 'should set entry station' do
       subject.top_up(10)
-      subject.touch_in(station)
-      expect(subject.entry_station).to eq station
+      expect(journey).to receive(:start_journey).with(entry_station)
+      subject.touch_in(entry_station)
     end
 
     it 'should throw an error when balance is below minimum' do
-      expect { subject.touch_in(station) }.to raise_error 'Balance is too low. Minimum balance must be £1'
+      expect { subject.touch_in(entry_station) }.to raise_error 'Balance is too low. Minimum balance must be £1'
     end
   end
 
   describe '#touch-out' do
 
-    it 'should set entry station to nil' do
-      subject.top_up(10)
-      subject.touch_in(station)
-      subject.touch_out(exit_station)
-      expect(subject.entry_station).to eq nil
-    end
-
-    it 'should reduce the balance by £1' do
+    it 'should reduce the balance' do
+      expect(journey).to receive(:fare).and_return 1
       expect { subject.touch_out(exit_station) }.to change{ subject.balance }.by(-1)
     end
 
-    it 'should store latest journey' do
+    it 'should end the journey' do
       subject.top_up(10)
-      subject.touch_in(station)
+      subject.touch_in(entry_station)
+      expect(journey).to receive(:end_journey).with(exit_station)
       subject.touch_out(exit_station)
-      expect(subject.journeys).to include({ entry_station: station, exit_station: exit_station})
-    end
-
-    it 'should store history of journeys' do
-      subject.top_up(10)
-      3.times do 
-        subject.touch_in(station)
-        subject.touch_out(exit_station)
-      end
-
-      expected = [
-        { entry_station: station, exit_station: exit_station},
-        { entry_station: station, exit_station: exit_station},
-        { entry_station: station, exit_station: exit_station}
-      ]
-      expect(subject.journeys).to eq expected
     end
   end
 end
